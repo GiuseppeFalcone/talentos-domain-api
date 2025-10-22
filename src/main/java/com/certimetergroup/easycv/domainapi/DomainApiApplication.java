@@ -1,4 +1,4 @@
-package com.certimeter.easycv.domain_api;
+package com.certimetergroup.easycv.domainapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
