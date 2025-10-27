@@ -1,4 +1,4 @@
-package com.certimeter.easycv.domain_api;
+package com.certimetergroup.easycv.domainapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
