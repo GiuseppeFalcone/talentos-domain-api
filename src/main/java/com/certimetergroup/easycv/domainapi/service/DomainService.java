@@ -1,7 +1,7 @@
 package com.certimetergroup.easycv.domainapi.service;
 
-import com.certimetergroup.easycv.commons.dto.domain.CreateDomainDto;
-import com.certimetergroup.easycv.commons.dto.domain.DomainDto;
+import com.certimetergroup.easycv.commons.response.dto.domain.CreateDomainDto;
+import com.certimetergroup.easycv.commons.response.dto.domain.DomainDto;
 import com.certimetergroup.easycv.commons.enumeration.ResponseEnum;
 import com.certimetergroup.easycv.commons.exception.FailureException;
 import com.certimetergroup.easycv.domainapi.mapper.DomainMapper;

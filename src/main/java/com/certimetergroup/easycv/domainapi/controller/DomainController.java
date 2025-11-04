@@ -1,11 +1,10 @@
 package com.certimetergroup.easycv.domainapi.controller;
 
-import com.certimetergroup.easycv.commons.dto.domain.CreateDomainDto;
+import com.certimetergroup.easycv.commons.response.dto.domain.CreateDomainDto;
 import com.certimetergroup.easycv.commons.enumeration.ResponseEnum;
-import com.certimetergroup.easycv.commons.dto.Response;
-import com.certimetergroup.easycv.commons.dto.domain.DomainDto;
+import com.certimetergroup.easycv.commons.response.Response;
+import com.certimetergroup.easycv.commons.response.dto.domain.DomainDto;
 import com.certimetergroup.easycv.domainapi.service.DomainService;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
