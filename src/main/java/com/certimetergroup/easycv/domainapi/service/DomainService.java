@@ -1,69 +1,79 @@
 package com.certimetergroup.easycv.domainapi.service;
 
-import com.certimetergroup.easycv.commons.enums.ResponseEnum;
-import com.certimetergroup.easycv.commons.exception.ServerSideError;
-import com.certimetergroup.easycv.domainapi.dto.DTOCreateDomain;
-import com.certimetergroup.easycv.domainapi.dto.DTODomain;
-import com.certimetergroup.easycv.domainapi.exception.DomainNotFoundException;
+import com.certimetergroup.easycv.commons.dto.domain.CreateDomainDto;
+import com.certimetergroup.easycv.commons.dto.domain.DomainDto;
+import com.certimetergroup.easycv.commons.enumeration.ResponseEnum;
+import com.certimetergroup.easycv.commons.exception.FailureException;
 import com.certimetergroup.easycv.domainapi.mapper.DomainMapper;
+import com.certimetergroup.easycv.domainapi.mapper.DomainOptionMapper;
 import com.certimetergroup.easycv.domainapi.model.Domain;
+import com.certimetergroup.easycv.domainapi.model.DomainOption;
 import com.certimetergroup.easycv.domainapi.repository.DomainRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
 
-@Service @Validated
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Service
+@RequiredArgsConstructor
 public class DomainService {
-
     private final DomainRepository domainRepository;
     private final DomainMapper domainMapper;
+    private final DomainOptionMapper domainOptionMapper;
 
-    public PagedModel<DTODomain> getAllDomains(Integer page, Integer pageSize) {
-        Pageable paging = PageRequest.of(page, pageSize);
-        return new PagedModel<>(domainRepository.findAll(paging).map(domainMapper::toDTODomain));
+    public PagedModel<DomainDto> getDomains(Integer page, Integer pageSize, String domainName) {
+        Pageable paging = PageRequest.of(page - 1, pageSize);
+        Page<Domain> resultPage;
+        if (domainName != null && !domainName.isBlank())
+            resultPage = domainRepository.findAllByNameContainingIgnoreCase(paging, domainName);
+        else resultPage = domainRepository.findAll(paging);
+        Page<DomainDto> resultDtoPage = resultPage.map(domain -> {
+            DomainDto dto = domainMapper.toDTO(domain);
+            dto.setDomainOptions(domainOptionMapper.optionsToStrings(domain.getDomainOptions()));
+            return dto;
+        });
+        return new PagedModel<>(resultDtoPage);
     }
 
-    public DTODomain getDomainById(Long id) {
-        return (domainRepository.findById(id).map(domainMapper::toDTODomain)).orElseThrow(new DomainNotFoundException(id).get());
+    public Optional<DomainDto> getDomain(Long domainId) {
+        return domainRepository.findById(domainId).map(domain -> {
+            DomainDto dto = domainMapper.toDTO(domain);
+            dto.setDomainOptions(domainOptionMapper.optionsToStrings(domain.getDomainOptions()));
+            return dto;
+        });
     }
 
-    public DTODomain addNewDomain(DTOCreateDomain dtoCreateDomain) {
-        try {
-            return domainMapper.toDTODomain(
-                    domainRepository.save(domainMapper.toDomainFromCreateDomain(dtoCreateDomain)));
-        } catch (Exception _) {
-            throw new ServerSideError(ResponseEnum.INTERNAL_SERVER_ERROR, "Error in saving new domain");
-        }
+    public DomainDto addNewDomain(CreateDomainDto dtoCreateDomain) {
+        Optional<Domain> optionalDomain = domainRepository.findByNameIgnoreCase(dtoCreateDomain.getDomainName());
+        if (optionalDomain.isEmpty())
+            throw new FailureException(ResponseEnum.ALREADY_EXISTS, "Domain already exists with given name");
+        Domain domain = domainMapper.toEntityFromCreateDto(dtoCreateDomain);
+        Set<DomainOption> domainOptionSet = domainOptionMapper.toEntitySet(dtoCreateDomain.getDomainOptions(), domain);
+        domain.setDomainOptions(domainOptionSet);
+        return domainMapper.toDTO(domainRepository.save(domain));
     }
 
-    public DTODomain updateWholeDomain(Long id, DTODomain dtoDomain) {
-        if (!id.equals(dtoDomain.getId()))
-            throw new IllegalArgumentException("Provided id in request url and user id in request body are NOT equal");
-        try {
-            Optional<Domain> optionalDomain = domainRepository.findById(id);
-            if (optionalDomain.isEmpty())
-                throw new DomainNotFoundException(id);
-            Domain domain = optionalDomain.get();
-            DomainMapper.updateFromDTO(dtoDomain, domain);
-            return domainMapper.toDTODomain(domainRepository.save(domain));
-        } catch (Exception _) {
-            throw new ServerSideError(ResponseEnum.INTERNAL_SERVER_ERROR, "Error in updating Domain data");
-        }
+    @Transactional
+    public Optional<DomainDto> replaceDomainData(Long domainId, DomainDto domainDto) {
+        if (!domainId.equals(domainDto.getDomainId()))
+            throw new FailureException(ResponseEnum.BAD_REQUEST, "DomainId in path variable and Body are not equal");
+        Optional<Domain> optionalDomain = domainRepository.findById(domainId);
+        if (optionalDomain.isEmpty())
+            throw new FailureException(ResponseEnum.NOT_FOUND);
+        Domain domain = optionalDomain.get();
+        domainMapper.updateFromDTO(domainDto, domain);
+        domainOptionMapper.synchronizeOptions(domainDto.getDomainOptions(), domain.getDomainOptions(), domain);
+        return Optional.of(domainMapper.toDTO(domainRepository.save(domain)));
     }
 
-    public void deleteDomain(Long id) {
-        Domain domain = domainRepository.findById(id).orElseThrow(new DomainNotFoundException(id).get());
-        try {
-            domainRepository.delete(domain);
-        } catch (Exception _) {
-            throw new ServerSideError(ResponseEnum.INTERNAL_SERVER_ERROR, "Error in deleting domain");
-        }
+    @Transactional
+    public void deleteDomain(Long domainId) {
+        domainRepository.deleteById(domainId);
     }
 }

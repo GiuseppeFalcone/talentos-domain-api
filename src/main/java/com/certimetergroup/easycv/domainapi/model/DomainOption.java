@@ -3,27 +3,25 @@ package com.certimetergroup.easycv.domainapi.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
-@Table(name = "domain")
+@Table(name = "domain_option")
 @Builder
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Domain {
+public class DomainOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "domain_id")
+    private Domain domainName;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "domainName", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<DomainOption> domainOptions = new HashSet<>();
+    @Column(name = "value", nullable = false)
+    private String value;
 }

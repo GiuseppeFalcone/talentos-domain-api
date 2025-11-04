@@ -1,19 +1,28 @@
 package com.certimetergroup.easycv.domainapi.mapper;
 
-import com.certimetergroup.easycv.domainapi.dto.DTOCreateDomain;
-import com.certimetergroup.easycv.domainapi.dto.DTODomain;
+import com.certimetergroup.easycv.commons.dto.domain.CreateDomainDto;
+import com.certimetergroup.easycv.commons.dto.domain.DomainDto;
 import com.certimetergroup.easycv.domainapi.model.Domain;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.beans.BeanUtils;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface DomainMapper {
-    DTODomain toDTODomain(Domain domain);
 
-    Domain toDomainFromCreateDomain (DTOCreateDomain dtoDomain);
+    @Mapping(target = "domainId", source = "id")
+    @Mapping(target = "domainName", source = "name")
+    @Mapping(target = "domainOptions", ignore = true)
+    DomainDto toDTO(Domain domain);
 
-    static void updateFromDTO (DTODomain dtoDomain, Domain domain) {
-        BeanUtils.copyProperties(dtoDomain, domain);
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "name", source = "domainName")
+    @Mapping(target = "domainOptions", ignore = true)
+    Domain toEntityFromCreateDto(CreateDomainDto dtoCreateDomain);
+
+    @Mapping(target = "name", source = "domainName")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "domainOptions", ignore = true)
+    void updateFromDTO(DomainDto dto, @MappingTarget Domain domain);
 }
