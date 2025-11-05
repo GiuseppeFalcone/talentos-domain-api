@@ -23,6 +23,6 @@ public class SwaggerConfig {
                 )
                 .externalDocs(new ExternalDocumentation()
                         .description("Developer guide")
-                        .url("http://localhost:8080/user-api/docs"));
+                        .url("http://localhost:8082/domain-api/docs"));
     }
 }
