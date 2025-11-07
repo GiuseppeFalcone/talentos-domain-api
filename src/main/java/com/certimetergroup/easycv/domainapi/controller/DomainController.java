@@ -4,6 +4,7 @@ import com.certimetergroup.easycv.commons.response.dto.domain.CreateDomainDto;
 import com.certimetergroup.easycv.commons.enumeration.ResponseEnum;
 import com.certimetergroup.easycv.commons.response.Response;
 import com.certimetergroup.easycv.commons.response.dto.domain.DomainDto;
+import com.certimetergroup.easycv.domainapi.service.AuthorizationService;
 import com.certimetergroup.easycv.domainapi.service.DomainService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -23,13 +24,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DomainController {
     private final DomainService domainService;
+    private final AuthorizationService authorizationService;
 
     @GetMapping
     public ResponseEntity<Response<PagedModel<DomainDto>>> getDomains(
             @RequestParam(defaultValue = "1") @Positive(message = "Page must be > 0") Integer page,
             @RequestParam(defaultValue = "5") @Positive(message = "Page size must be > 0") Integer pageSize,
-            @RequestParam(required = false) String domainName) {
-        return ResponseEntity.ok().body(new Response<>(ResponseEnum.SUCCESS, domainService.getDomains(page, pageSize, domainName)));
+            @RequestParam(required = false) String domainName,
+            @RequestParam(required = false) String domainOptionValue) {
+        return ResponseEntity.ok().body(new Response<>(ResponseEnum.SUCCESS, domainService.getDomains(page, pageSize, domainName, domainOptionValue)));
     }
 
     @GetMapping("/{domainId}")
@@ -43,6 +46,7 @@ public class DomainController {
 
     @PostMapping
     public ResponseEntity<Response<DomainDto>> addNewDomain(@RequestBody @NotNull(message = "CreateDomainDto required") CreateDomainDto createDomainDto) {
+        authorizationService.checkAuthorization();
         return ResponseEntity.ok().body(new Response<>(ResponseEnum.SUCCESS, domainService.addNewDomain(createDomainDto)));
     }
 
@@ -50,16 +54,18 @@ public class DomainController {
     public ResponseEntity<Response<DomainDto>> replaceDomainData(
             @PathVariable @NotNull(message = "Domain Id required") @Positive(message = "Wrong domain id provided") Long domainId,
             @RequestBody @NotNull(message = "DomainDto required") DomainDto domainDto) {
+        authorizationService.checkAuthorization();
         Optional<DomainDto> optionalDomainDto = domainService.replaceDomainData(domainId, domainDto);
         return optionalDomainDto.map(
                 dto -> ResponseEntity.ok().body(new Response<>(ResponseEnum.SUCCESS, dto)))
                 .orElseGet(() -> ResponseEntity.status(ResponseEnum.NOT_FOUND.httpStatus).body(new Response<>(ResponseEnum.NOT_FOUND)));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{domainId}")
     public ResponseEntity<Response<Void>> deleteDomain(
-            @PathVariable @NotNull @Positive(message = "Wrong domain id provided") Long id) {
-        domainService.deleteDomain(id);
+            @PathVariable @NotNull @Positive(message = "Wrong domain id provided") Long domainId) {
+        authorizationService.checkAuthorization();
+        domainService.deleteDomain(domainId);
         return ResponseEntity.ok().body(new Response<>(ResponseEnum.SUCCESS));
     }
 }

@@ -9,13 +9,16 @@ import com.certimetergroup.easycv.domainapi.mapper.DomainOptionMapper;
 import com.certimetergroup.easycv.domainapi.model.Domain;
 import com.certimetergroup.easycv.domainapi.model.DomainOption;
 import com.certimetergroup.easycv.domainapi.repository.DomainRepository;
+import com.certimetergroup.easycv.domainapi.repository.specification.DomainSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 import java.util.Set;
@@ -27,12 +30,19 @@ public class DomainService {
     private final DomainMapper domainMapper;
     private final DomainOptionMapper domainOptionMapper;
 
-    public PagedModel<DomainDto> getDomains(Integer page, Integer pageSize, String domainName) {
+    public PagedModel<DomainDto> getDomains(Integer page, Integer pageSize, String domainName, String domainOptionValue) {
         Pageable paging = PageRequest.of(page - 1, pageSize);
-        Page<Domain> resultPage;
-        if (domainName != null && !domainName.isBlank())
-            resultPage = domainRepository.findAllByNameContainingIgnoreCase(paging, domainName);
-        else resultPage = domainRepository.findAll(paging);
+
+        Specification<Domain> spec = Specification.unrestricted();
+
+        if (StringUtils.hasText(domainName))
+            spec.and(DomainSpecification.containsDomainName(domainName));
+
+        if (StringUtils.hasText(domainOptionValue))
+            spec.and(DomainSpecification.containsDomainOptionValue(domainOptionValue));
+
+        Page<Domain> resultPage = domainRepository.findAll(spec, paging);
+
         Page<DomainDto> resultDtoPage = resultPage.map(domain -> {
             DomainDto dto = domainMapper.toDTO(domain);
             dto.setDomainOptions(domainOptionMapper.optionsToStrings(domain.getDomainOptions()));
@@ -50,7 +60,7 @@ public class DomainService {
     }
 
     public DomainDto addNewDomain(CreateDomainDto dtoCreateDomain) {
-        Optional<Domain> optionalDomain = domainRepository.findByNameIgnoreCase(dtoCreateDomain.getDomainName());
+        Optional<Domain> optionalDomain = domainRepository.findByNameContainingIgnoreCase(dtoCreateDomain.getDomainName());
         if (optionalDomain.isEmpty())
             throw new FailureException(ResponseEnum.ALREADY_EXISTS, "Domain already exists with given name");
         Domain domain = domainMapper.toEntityFromCreateDto(dtoCreateDomain);
