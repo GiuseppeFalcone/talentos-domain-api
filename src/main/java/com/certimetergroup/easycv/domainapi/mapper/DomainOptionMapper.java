@@ -34,6 +34,19 @@ public interface DomainOptionMapper {
                 .collect(Collectors.toSet());
     }
 
+    default Set<String> optionsToStrings(Set<DomainOption> domainOptionSet, Set<Long> domainOptionIds) {
+        if (domainOptionSet == null) {
+            return Collections.emptySet();
+        }
+        if (domainOptionIds == null || domainOptionIds.isEmpty()) {
+            return optionsToStrings(domainOptionSet);
+        }
+        return domainOptionSet.stream()
+                .filter(option -> domainOptionIds.contains(option.getId()))
+                .map(DomainOption::getValue)
+                .collect(Collectors.toSet());
+    }
+
     default void synchronizeOptions(Set<String> desiredValues,
                                         @MappingTarget Set<DomainOption> currentOptions,
                                         Domain parentDomain) {

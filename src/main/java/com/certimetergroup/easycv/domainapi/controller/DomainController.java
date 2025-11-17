@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/domains")
@@ -37,8 +39,9 @@ public class DomainController {
 
     @GetMapping("/{domainId}")
     public ResponseEntity<Response<DomainDto>> getDomain(
-            @PathVariable @NotNull(message = "Domain Id required") @Positive(message = "Domain Id must be > 0") Long domainId) {
-        Optional<DomainDto> optionalDomainDto = domainService.getDomain(domainId);
+            @PathVariable @NotNull(message = "Domain Id required") @Positive(message = "Domain Id must be > 0") Long domainId,
+            @RequestParam(required = false) Set<Long> domainOptionIds) {
+        Optional<DomainDto> optionalDomainDto = domainService.getDomain(domainId, domainOptionIds);
         return optionalDomainDto.map(
                 domainDto -> ResponseEntity.ok().body(new Response<>(ResponseEnum.SUCCESS, domainDto)))
                 .orElseGet(() -> ResponseEntity.status(ResponseEnum.NOT_FOUND.httpStatus).body(new Response<>(ResponseEnum.NOT_FOUND)));

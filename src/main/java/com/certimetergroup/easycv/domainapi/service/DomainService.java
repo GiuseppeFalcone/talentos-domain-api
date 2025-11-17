@@ -51,10 +51,10 @@ public class DomainService {
         return new PagedModel<>(resultDtoPage);
     }
 
-    public Optional<DomainDto> getDomain(Long domainId) {
+    public Optional<DomainDto> getDomain(Long domainId, Set<Long> domainOptionIds) {
         return domainRepository.findById(domainId).map(domain -> {
             DomainDto dto = domainMapper.toDTO(domain);
-            dto.setDomainOptions(domainOptionMapper.optionsToStrings(domain.getDomainOptions()));
+            dto.setDomainOptions(domainOptionMapper.optionsToStrings(domain.getDomainOptions(), domainOptionIds));
             return dto;
         });
     }

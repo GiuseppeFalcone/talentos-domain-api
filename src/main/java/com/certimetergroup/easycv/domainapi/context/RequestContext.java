@@ -9,7 +9,6 @@ import org.springframework.web.context.annotation.RequestScope;
 @Component
 @RequestScope
 @Data
-@NoArgsConstructor
 public class RequestContext {
     private Long userId;
     private UserRoleEnum userRole;
