@@ -21,7 +21,7 @@ public interface DomainOptionMapper {
     @Mapping(target = "value", source = "value")
     DomainOption toEntity(String value, Domain domain);
 
-    @Mapping(target = "domainOptionId", ignore = true)
+    @Mapping(target = "domainOptionId", source = "id")
     DomainOptionDto toDto(DomainOption domainOption);
 
     default Set<DomainOption> toEntitySet(Set<String> values, Domain domain) {

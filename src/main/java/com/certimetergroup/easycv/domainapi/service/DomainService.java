@@ -4,6 +4,7 @@ import com.certimetergroup.easycv.commons.response.dto.domain.CreateDomainDto;
 import com.certimetergroup.easycv.commons.response.dto.domain.DomainDto;
 import com.certimetergroup.easycv.commons.enumeration.ResponseEnum;
 import com.certimetergroup.easycv.commons.exception.FailureException;
+import com.certimetergroup.easycv.commons.response.dto.domain.DomainOptionDto;
 import com.certimetergroup.easycv.domainapi.mapper.DomainMapper;
 import com.certimetergroup.easycv.domainapi.mapper.DomainOptionMapper;
 import com.certimetergroup.easycv.domainapi.model.Domain;
@@ -31,7 +32,8 @@ public class DomainService {
     private final DomainMapper domainMapper;
     private final DomainOptionMapper domainOptionMapper;
 
-    public PagedModel<DomainDto> getDomains(Integer page, Integer pageSize, String domainName, String domainOptionValue) {
+    public PagedModel<DomainDto> getDomains(Integer page, Integer pageSize, String domainName,
+                                            String domainOptionValue) {
         Pageable paging = PageRequest.of(page - 1, pageSize);
 
         Specification<Domain> spec = Specification.unrestricted();

@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Set;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DomainSpecification {
 
