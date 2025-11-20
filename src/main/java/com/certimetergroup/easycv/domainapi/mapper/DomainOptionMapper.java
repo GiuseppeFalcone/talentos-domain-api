@@ -1,5 +1,6 @@
 package com.certimetergroup.easycv.domainapi.mapper;
 
+import com.certimetergroup.easycv.commons.response.dto.domain.DomainOptionDto;
 import com.certimetergroup.easycv.domainapi.model.Domain;
 import com.certimetergroup.easycv.domainapi.model.DomainOption;
 
@@ -20,9 +21,8 @@ public interface DomainOptionMapper {
     @Mapping(target = "value", source = "value")
     DomainOption toEntity(String value, Domain domain);
 
-    default Set<String> optionsToStrings(Set<DomainOption> domainOptionSet) {
-        return domainOptionSet.stream().map(DomainOption::getValue).collect(Collectors.toSet());
-    }
+    @Mapping(target = "domainOptionId", source = "id")
+    DomainOptionDto toDto(DomainOption domainOption);
 
     default Set<DomainOption> toEntitySet(Set<String> values, Domain domain) {
         if (values == null || values.isEmpty()) {
@@ -34,10 +34,12 @@ public interface DomainOptionMapper {
                 .collect(Collectors.toSet());
     }
 
-    default void synchronizeOptions(Set<String> desiredValues,
+    default void synchronizeOptions(Set<DomainOptionDto> domainOptionDtos,
                                         @MappingTarget Set<DomainOption> currentOptions,
                                         Domain parentDomain) {
-        Set<String> desired = (desiredValues != null) ? desiredValues : new HashSet<>();
+
+        Set<String> desired = (domainOptionDtos != null && !domainOptionDtos.isEmpty()) ?
+                domainOptionDtos.stream().map(DomainOptionDto::getValue).collect(Collectors.toSet()) : new HashSet<>();
 
         Set<String> originalValues = currentOptions.stream()
                 .map(DomainOption::getValue)

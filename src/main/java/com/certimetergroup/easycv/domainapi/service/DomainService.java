@@ -4,6 +4,7 @@ import com.certimetergroup.easycv.commons.response.dto.domain.CreateDomainDto;
 import com.certimetergroup.easycv.commons.response.dto.domain.DomainDto;
 import com.certimetergroup.easycv.commons.enumeration.ResponseEnum;
 import com.certimetergroup.easycv.commons.exception.FailureException;
+import com.certimetergroup.easycv.commons.response.dto.domain.DomainOptionDto;
 import com.certimetergroup.easycv.domainapi.mapper.DomainMapper;
 import com.certimetergroup.easycv.domainapi.mapper.DomainOptionMapper;
 import com.certimetergroup.easycv.domainapi.model.Domain;
@@ -22,6 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +32,8 @@ public class DomainService {
     private final DomainMapper domainMapper;
     private final DomainOptionMapper domainOptionMapper;
 
-    public PagedModel<DomainDto> getDomains(Integer page, Integer pageSize, String domainName, String domainOptionValue) {
+    public PagedModel<DomainDto> getDomains(Integer page, Integer pageSize, String domainName,
+                                            String domainOptionValue) {
         Pageable paging = PageRequest.of(page - 1, pageSize);
 
         Specification<Domain> spec = Specification.unrestricted();
@@ -45,16 +48,25 @@ public class DomainService {
 
         Page<DomainDto> resultDtoPage = resultPage.map(domain -> {
             DomainDto dto = domainMapper.toDTO(domain);
-            dto.setDomainOptions(domainOptionMapper.optionsToStrings(domain.getDomainOptions()));
+            dto.setDomainOptions(domain.getDomainOptions().stream().map(domainOptionMapper::toDto).collect(Collectors.toSet()));
             return dto;
         });
         return new PagedModel<>(resultDtoPage);
     }
 
-    public Optional<DomainDto> getDomain(Long domainId) {
+    public Optional<DomainDto> getDomain(Long domainId, Set<Long> domainOptionIds) {
         return domainRepository.findById(domainId).map(domain -> {
             DomainDto dto = domainMapper.toDTO(domain);
-            dto.setDomainOptions(domainOptionMapper.optionsToStrings(domain.getDomainOptions()));
+            if (domainOptionIds != null) {
+                dto.setDomainOptions(domain.getDomainOptions().stream().map( domainOption -> {
+                            if (domainOptionIds.contains(domainOption.getId()))
+                                return domainOptionMapper.toDto(domainOption);
+                            else
+                                return null;
+                        }).collect(Collectors.toSet()));
+            } else {
+                dto.setDomainOptions(domain.getDomainOptions().stream().map(domainOptionMapper::toDto).collect(Collectors.toSet()));
+            }
             return dto;
         });
     }

@@ -4,7 +4,9 @@ import com.certimetergroup.easycv.commons.response.dto.domain.CreateDomainDto;
 import com.certimetergroup.easycv.commons.enumeration.ResponseEnum;
 import com.certimetergroup.easycv.commons.response.Response;
 import com.certimetergroup.easycv.commons.response.dto.domain.DomainDto;
+import com.certimetergroup.easycv.commons.response.dto.domain.DomainOptionDto;
 import com.certimetergroup.easycv.domainapi.service.AuthorizationService;
+import com.certimetergroup.easycv.domainapi.service.DomainOptionService;
 import com.certimetergroup.easycv.domainapi.service.DomainService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -15,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/domains")
@@ -24,6 +28,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DomainController {
     private final DomainService domainService;
+    private final DomainOptionService domainOptionService;
     private final AuthorizationService authorizationService;
 
     @GetMapping
@@ -37,11 +42,22 @@ public class DomainController {
 
     @GetMapping("/{domainId}")
     public ResponseEntity<Response<DomainDto>> getDomain(
-            @PathVariable @NotNull(message = "Domain Id required") @Positive(message = "Domain Id must be > 0") Long domainId) {
-        Optional<DomainDto> optionalDomainDto = domainService.getDomain(domainId);
+            @PathVariable @NotNull(message = "Domain Id required") @Positive(message = "Domain Id must be > 0") Long domainId,
+            @RequestParam(required = false) Set<Long> domainOptionIds) {
+        Optional<DomainDto> optionalDomainDto = domainService.getDomain(domainId, domainOptionIds);
         return optionalDomainDto.map(
                 domainDto -> ResponseEntity.ok().body(new Response<>(ResponseEnum.SUCCESS, domainDto)))
                 .orElseGet(() -> ResponseEntity.status(ResponseEnum.NOT_FOUND.httpStatus).body(new Response<>(ResponseEnum.NOT_FOUND)));
+    }
+
+    @GetMapping("/domain-option/{domainOptionId}")
+    public ResponseEntity<Response<DomainOptionDto>> getDomainOption(
+            @PathVariable @NotNull(message = "Domain Option Id required") @Positive(message = "Wrong domain option id provided") Long domainOptionId) {
+        Optional<DomainOptionDto> optionalDomainDto = domainOptionService.getDomainOption(domainOptionId);
+        return optionalDomainDto.map(
+                        domainDto -> ResponseEntity.ok().body(new Response<>(ResponseEnum.SUCCESS, domainDto)))
+                .orElseGet(() -> ResponseEntity.status(ResponseEnum.NOT_FOUND.httpStatus).body(new Response<>(ResponseEnum.NOT_FOUND)));
+
     }
 
     @PostMapping
