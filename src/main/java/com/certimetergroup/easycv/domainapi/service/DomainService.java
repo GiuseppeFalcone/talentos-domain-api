@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,10 +40,10 @@ public class DomainService {
         Specification<Domain> spec = Specification.unrestricted();
 
         if (StringUtils.hasText(domainName))
-            spec.and(DomainSpecification.containsDomainName(domainName));
+            spec = spec.and(DomainSpecification.containsDomainName(domainName));
 
         if (StringUtils.hasText(domainOptionValue))
-            spec.and(DomainSpecification.containsDomainOptionValue(domainOptionValue));
+            spec = spec.and(DomainSpecification.containsDomainOptionValue(domainOptionValue));
 
         Page<Domain> resultPage = domainRepository.findAll(spec, paging);
 
@@ -72,12 +73,17 @@ public class DomainService {
     }
 
     public DomainDto addNewDomain(CreateDomainDto dtoCreateDomain) {
-        Optional<Domain> optionalDomain = domainRepository.findByNameContainingIgnoreCase(dtoCreateDomain.getDomainName());
-        if (optionalDomain.isEmpty())
+        Specification<Domain> spec = Specification.unrestricted();
+        spec = spec.and(DomainSpecification.hasDomainName(dtoCreateDomain.getDomainName()));
+        List<Domain> existingDomains = domainRepository.findAll(spec);
+
+        if (!existingDomains.isEmpty())
             throw new FailureException(ResponseEnum.ALREADY_EXISTS, "Domain already exists with given name");
+
         Domain domain = domainMapper.toEntityFromCreateDto(dtoCreateDomain);
         Set<DomainOption> domainOptionSet = domainOptionMapper.toEntitySet(dtoCreateDomain.getDomainOptions(), domain);
         domain.setDomainOptions(domainOptionSet);
+
         return domainMapper.toDTO(domainRepository.save(domain));
     }
 
