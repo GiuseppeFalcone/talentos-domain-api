@@ -26,4 +26,10 @@ public class DomainSpecification {
             return cb.like(cb.lower(optionJoin.get("value")), "%" + domainOptionValue.toLowerCase() + "%");
         };
     }
+
+    public static Specification<Domain> hasDomainName(String domainName) {
+        return (root, query, cb) -> (
+                cb.equal(cb.lower(root.get("name")), domainName.toLowerCase())
+        );
+    }
 }
