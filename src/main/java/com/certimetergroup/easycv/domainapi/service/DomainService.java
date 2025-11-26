@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +50,17 @@ public class DomainService {
 
         Page<DomainDto> resultDtoPage = resultPage.map(domain -> {
             DomainDto dto = domainMapper.toDTO(domain);
-            dto.setDomainOptions(domain.getDomainOptions().stream().map(domainOptionMapper::toDto).collect(Collectors.toSet()));
+
+            Stream<DomainOption> optionsStream = domain.getDomainOptions().stream();
+
+            if (StringUtils.hasText(domainOptionValue)) {
+                optionsStream = optionsStream.filter(opt ->
+                        opt.getValue() != null &&
+                                opt.getValue().toLowerCase().contains(domainOptionValue.toLowerCase())
+                );
+            }
+
+            dto.setDomainOptions(optionsStream.map(domainOptionMapper::toDto).collect(Collectors.toSet()));
             return dto;
         });
         return new PagedModel<>(resultDtoPage);
