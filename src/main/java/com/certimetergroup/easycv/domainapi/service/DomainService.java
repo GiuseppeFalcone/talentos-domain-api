@@ -70,12 +70,10 @@ public class DomainService {
         return domainRepository.findById(domainId).map(domain -> {
             DomainDto dto = domainMapper.toDTO(domain);
             if (domainOptionIds != null) {
-                dto.setDomainOptions(domain.getDomainOptions().stream().map( domainOption -> {
-                            if (domainOptionIds.contains(domainOption.getId()))
-                                return domainOptionMapper.toDto(domainOption);
-                            else
-                                return null;
-                        }).collect(Collectors.toSet()));
+                dto.setDomainOptions(domain.getDomainOptions().stream()
+                        .filter(domainOption -> domainOptionIds.contains(domainOption.getId()))
+                        .map(domainOptionMapper::toDto)
+                        .collect(Collectors.toSet()));
             } else {
                 dto.setDomainOptions(domain.getDomainOptions().stream().map(domainOptionMapper::toDto).collect(Collectors.toSet()));
             }
