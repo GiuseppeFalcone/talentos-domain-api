@@ -1,8 +1,8 @@
-package com.certimetergroup.easycv.domainapi.controller;
+package com.certimetergroup.talentos.domainapi.controller;
 
-import com.certimetergroup.easycv.commons.exception.FailureException;
-import com.certimetergroup.easycv.commons.response.Response;
-import com.certimetergroup.easycv.commons.enumeration.ResponseEnum;
+import com.certimetergroup.talentos.commons.exception.FailureException;
+import com.certimetergroup.talentos.commons.response.Response;
+import com.certimetergroup.talentos.commons.enumeration.ResponseEnum;
 import jakarta.validation.ConstraintViolationException;
 import org.hibernate.JDBCException;
 import org.hibernate.exception.JDBCConnectionException;

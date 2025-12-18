@@ -1,8 +1,8 @@
-package com.certimetergroup.easycv.domainapi.service;
+package com.certimetergroup.talentos.domainapi.service;
 
-import com.certimetergroup.easycv.commons.response.dto.domain.DomainOptionDto;
-import com.certimetergroup.easycv.domainapi.mapper.DomainOptionMapper;
-import com.certimetergroup.easycv.domainapi.repository.DomainOptionRepository;
+import com.certimetergroup.talentos.commons.response.dto.domain.DomainOptionDto;
+import com.certimetergroup.talentos.domainapi.mapper.DomainOptionMapper;
+import com.certimetergroup.talentos.domainapi.repository.DomainOptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

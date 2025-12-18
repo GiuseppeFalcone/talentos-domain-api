@@ -1,4 +1,4 @@
-package com.certimetergroup.easycv.domainapi.model;
+package com.certimetergroup.talentos.domainapi.model;
 
 import jakarta.persistence.*;
 import lombok.*;

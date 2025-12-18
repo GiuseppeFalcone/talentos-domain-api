@@ -1,12 +1,12 @@
-package com.certimetergroup.easycv.domainapi.controller;
+package com.certimetergroup.talentos.domainapi.controller;
 
-import com.certimetergroup.easycv.commons.response.dto.domain.CreateDomainDto;
-import com.certimetergroup.easycv.commons.enumeration.ResponseEnum;
-import com.certimetergroup.easycv.commons.response.Response;
-import com.certimetergroup.easycv.commons.response.dto.domain.DomainDto;
-import com.certimetergroup.easycv.commons.response.dto.domain.DomainOptionDto;
-import com.certimetergroup.easycv.domainapi.service.DomainOptionService;
-import com.certimetergroup.easycv.domainapi.service.DomainService;
+import com.certimetergroup.talentos.commons.response.dto.domain.CreateDomainDto;
+import com.certimetergroup.talentos.commons.enumeration.ResponseEnum;
+import com.certimetergroup.talentos.commons.response.Response;
+import com.certimetergroup.talentos.commons.response.dto.domain.DomainDto;
+import com.certimetergroup.talentos.commons.response.dto.domain.DomainOptionDto;
+import com.certimetergroup.talentos.domainapi.service.DomainOptionService;
+import com.certimetergroup.talentos.domainapi.service.DomainService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;

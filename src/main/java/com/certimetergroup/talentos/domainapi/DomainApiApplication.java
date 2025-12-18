@@ -1,4 +1,4 @@
-package com.certimetergroup.easycv.domainapi;
+package com.certimetergroup.talentos.domainapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

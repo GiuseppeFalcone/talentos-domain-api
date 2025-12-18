@@ -1,16 +1,15 @@
-package com.certimetergroup.easycv.domainapi.service;
+package com.certimetergroup.talentos.domainapi.service;
 
-import com.certimetergroup.easycv.commons.response.dto.domain.CreateDomainDto;
-import com.certimetergroup.easycv.commons.response.dto.domain.DomainDto;
-import com.certimetergroup.easycv.commons.enumeration.ResponseEnum;
-import com.certimetergroup.easycv.commons.exception.FailureException;
-import com.certimetergroup.easycv.commons.response.dto.domain.DomainOptionDto;
-import com.certimetergroup.easycv.domainapi.mapper.DomainMapper;
-import com.certimetergroup.easycv.domainapi.mapper.DomainOptionMapper;
-import com.certimetergroup.easycv.domainapi.model.Domain;
-import com.certimetergroup.easycv.domainapi.model.DomainOption;
-import com.certimetergroup.easycv.domainapi.repository.DomainRepository;
-import com.certimetergroup.easycv.domainapi.repository.specification.DomainSpecification;
+import com.certimetergroup.talentos.commons.response.dto.domain.CreateDomainDto;
+import com.certimetergroup.talentos.commons.response.dto.domain.DomainDto;
+import com.certimetergroup.talentos.commons.enumeration.ResponseEnum;
+import com.certimetergroup.talentos.commons.exception.FailureException;
+import com.certimetergroup.talentos.domainapi.mapper.DomainMapper;
+import com.certimetergroup.talentos.domainapi.mapper.DomainOptionMapper;
+import com.certimetergroup.talentos.domainapi.model.Domain;
+import com.certimetergroup.talentos.domainapi.model.DomainOption;
+import com.certimetergroup.talentos.domainapi.repository.DomainRepository;
+import com.certimetergroup.talentos.domainapi.repository.specification.DomainSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

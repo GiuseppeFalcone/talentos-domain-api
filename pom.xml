@@ -8,7 +8,7 @@
 		<version>3.5.7</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.certimetergroup.easycv</groupId>
+	<groupId>com.certimetergroup.talentos</groupId>
 	<artifactId>domainapi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>domain-api</name>
@@ -82,7 +82,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.certimetergroup.easycv</groupId>
+            <groupId>com.certimetergroup.talentos</groupId>
             <artifactId>commons</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

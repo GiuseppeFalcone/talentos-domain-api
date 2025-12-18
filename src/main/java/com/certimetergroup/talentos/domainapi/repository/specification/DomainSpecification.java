@@ -1,7 +1,7 @@
-package com.certimetergroup.easycv.domainapi.repository.specification;
+package com.certimetergroup.talentos.domainapi.repository.specification;
 
-import com.certimetergroup.easycv.domainapi.model.Domain;
-import com.certimetergroup.easycv.domainapi.model.DomainOption;
+import com.certimetergroup.talentos.domainapi.model.Domain;
+import com.certimetergroup.talentos.domainapi.model.DomainOption;
 import jakarta.persistence.criteria.Join;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

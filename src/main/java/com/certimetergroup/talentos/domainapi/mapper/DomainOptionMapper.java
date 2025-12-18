@@ -1,8 +1,8 @@
-package com.certimetergroup.easycv.domainapi.mapper;
+package com.certimetergroup.talentos.domainapi.mapper;
 
-import com.certimetergroup.easycv.commons.response.dto.domain.DomainOptionDto;
-import com.certimetergroup.easycv.domainapi.model.Domain;
-import com.certimetergroup.easycv.domainapi.model.DomainOption;
+import com.certimetergroup.talentos.commons.response.dto.domain.DomainOptionDto;
+import com.certimetergroup.talentos.domainapi.model.Domain;
+import com.certimetergroup.talentos.domainapi.model.DomainOption;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

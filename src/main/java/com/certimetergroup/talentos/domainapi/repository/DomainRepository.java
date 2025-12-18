@@ -1,6 +1,6 @@
-package com.certimetergroup.easycv.domainapi.repository;
+package com.certimetergroup.talentos.domainapi.repository;
 
-import com.certimetergroup.easycv.domainapi.model.Domain;
+import com.certimetergroup.talentos.domainapi.model.Domain;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
