@@ -1,0 +1,404 @@
+{
+  "info": {
+    "_postman_id": "c4d5e6f7-3456-4890-a1b2-c3d4e5f67890",
+    "name": "Domain API (TalentOS) - With Tests",
+    "description": "Collection to test the Domain API endpoints for the TalentOS project. Includes JSON Schema validation scripts.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Domains",
+      "item": [
+        {
+          "name": "Get All Domains",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const schema = {",
+                  "    \"type\": \"object\",",
+                  "    \"properties\": {",
+                  "        \"responseEnum\": { \"type\": \"string\" },",
+                  "        \"payload\": {",
+                  "            \"type\": \"object\",",
+                  "            \"properties\": {",
+                  "                \"content\": {",
+                  "                    \"type\": \"array\",",
+                  "                    \"items\": {",
+                  "                        \"type\": \"object\",",
+                  "                        \"properties\": {",
+                  "                            \"domainId\": { \"type\": \"integer\" },",
+                  "                            \"domainName\": { \"type\": \"string\" },",
+                  "                            \"domainOptions\": {",
+                  "                                \"type\": \"array\",",
+                  "                                \"items\": {",
+                  "                                    \"type\": \"object\",",
+                  "                                    \"properties\": {",
+                  "                                        \"domainOptionId\": { \"type\": \"integer\" },",
+                  "                                        \"value\": { \"type\": \"string\" }",
+                  "                                    },",
+                  "                                    \"required\": [\"domainOptionId\", \"value\"]",
+                  "                                }",
+                  "                            }",
+                  "                        },",
+                  "                        \"required\": [\"domainId\", \"domainName\"]",
+                  "                    }",
+                  "                },",
+                  "                \"page\": {",
+                  "                    \"type\": \"object\",",
+                  "                    \"properties\": {",
+                  "                        \"size\": { \"type\": \"integer\" },",
+                  "                        \"number\": { \"type\": \"integer\" },",
+                  "                        \"totalElements\": { \"type\": \"integer\" },",
+                  "                        \"totalPages\": { \"type\": \"integer\" }",
+                  "                    }",
+                  "                }",
+                  "            }",
+                  "        }",
+                  "    }",
+                  "};",
+                  "",
+                  "pm.test(\"Schema Validation - Paged Domain List\", function () {",
+                  "    pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/domains?page=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "domains"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (default 1)"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "Items per page (default 5)"
+                },
+                {
+                  "key": "domainName",
+                  "value": "programming",
+                  "description": "Filter by domain name",
+                  "disabled": true
+                },
+                {
+                  "key": "domainOptionValue",
+                  "value": "Java",
+                  "description": "Filter by domain option value",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Domain By ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const schema = {",
+                  "    \"type\": \"object\",",
+                  "    \"properties\": {",
+                  "        \"responseEnum\": { \"type\": \"string\" },",
+                  "        \"payload\": {",
+                  "            \"type\": \"object\",",
+                  "            \"properties\": {",
+                  "                \"domainId\": { \"type\": \"integer\" },",
+                  "                \"domainName\": { \"type\": \"string\" },",
+                  "                \"domainOptions\": {",
+                  "                    \"type\": \"array\",",
+                  "                    \"items\": {",
+                  "                        \"type\": \"object\",",
+                  "                        \"properties\": {",
+                  "                            \"domainOptionId\": { \"type\": \"integer\" },",
+                  "                            \"value\": { \"type\": \"string\" }",
+                  "                        },",
+                  "                        \"required\": [\"domainOptionId\", \"value\"]",
+                  "                    }",
+                  "                }",
+                  "            },",
+                  "            \"required\": [\"domainId\", \"domainName\"]",
+                  "        }",
+                  "    }",
+                  "};",
+                  "",
+                  "pm.test(\"Schema Validation - Domain Detail\", function () {",
+                  "    pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/domains/4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "domains",
+                "4"
+              ],
+              "query": [
+                {
+                  "key": "domainOptionIds",
+                  "value": "18,19",
+                  "description": "Filter specific option IDs within the domain",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Domain",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const schema = {",
+                  "    \"type\": \"object\",",
+                  "    \"properties\": {",
+                  "        \"responseEnum\": { \"type\": \"string\" },",
+                  "        \"payload\": {",
+                  "            \"type\": \"object\",",
+                  "            \"properties\": {",
+                  "                \"domainId\": { \"type\": \"integer\" },",
+                  "                \"domainName\": { \"type\": \"string\" },",
+                  "                \"domainOptions\": { \"type\": \"array\" }",
+                  "            },",
+                  "            \"required\": [\"domainId\", \"domainName\"]",
+                  "        }",
+                  "    }",
+                  "};",
+                  "",
+                  "pm.test(\"Schema Validation - Created Domain\", function () {",
+                  "    pm.response.to.have.jsonSchema(schema);",
+                  "});",
+                  "",
+                  "// Save created domain ID for next steps",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.payload && jsonData.payload.domainId) {",
+                  "    pm.collectionVariables.set(\"createdDomainId\", jsonData.payload.domainId);",
+                  "    console.log(\"Created Domain ID:\", jsonData.payload.domainId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"domainName\": \"Cloud Providers\",\n  \"domainOptions\": [\n    \"AWS\",\n    \"Azure\",\n    \"Google Cloud\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/domains",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "domains"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Domain (Full Replacement)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Domain Data Updated\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.payload.domainName).to.eql(\"Cloud Platforms\");",
+                  "    // Check that options were synchronized (AWS removed, Alibaba added)",
+                  "    var options = jsonData.payload.domainOptions.map(o => o.value);",
+                  "    pm.expect(options).to.include(\"Alibaba Cloud\");",
+                  "    pm.expect(options).to.not.include(\"AWS\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"domainId\": {{createdDomainId}},\n    \"domainName\": \"Cloud Platforms\",\n    \"domainOptions\": [\n        { \"value\": \"Azure\" },\n        { \"value\": \"Google Cloud\" },\n        { \"value\": \"Alibaba Cloud\" }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/domains/{{createdDomainId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "domains",
+                "{{createdDomainId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Domain",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/domains/{{createdDomainId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "domains",
+                "{{createdDomainId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Domain Options",
+      "item": [
+        {
+          "name": "Get Domain Option By ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const schema = {",
+                  "    \"type\": \"object\",",
+                  "    \"properties\": {",
+                  "        \"responseEnum\": { \"type\": \"string\" },",
+                  "        \"payload\": {",
+                  "            \"type\": \"object\",",
+                  "            \"properties\": {",
+                  "                \"domainOptionId\": { \"type\": \"integer\" },",
+                  "                \"value\": { \"type\": \"string\" }",
+                  "            },",
+                  "            \"required\": [\"domainOptionId\", \"value\"]",
+                  "        }",
+                  "    }",
+                  "};",
+                  "",
+                  "pm.test(\"Schema Validation - Domain Option Detail\", function () {",
+                  "    pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/domains/domain-option/18",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "domains",
+                "domain-option",
+                "18"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8082",
+      "type": "string"
+    },
+    {
+      "key": "createdDomainId",
+      "value": ""
+    }
+  ]
+}
